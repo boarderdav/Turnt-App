@@ -9,6 +9,9 @@
 #import "AppDelegate.h"
 #import <Parse/Parse.h>
 #import "LoginViewController.h"
+#import "FriendsModel.h"
+#import "LocationModel.h"
+
 
 @interface AppDelegate ()
 
@@ -16,27 +19,42 @@
 
 @implementation AppDelegate
 
-
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
     
     //Initialize connection with Parse
     [Parse setApplicationId:@"lMmBDCknngx1EbLF1G4BoJuHqhJcs0Baxrv8uiVS"
                   clientKey:@"DI0T1zGR6hLS48IQqTqoH5xawtjed6lZcFuJmSvt"];
-    
-   // if ([PFUser currentUser]) {
-        // Go straight to the Turnt home screen
-     //   [self presentMainView];
-
-    //} else {
-        // Go to Account creation
-        [self presentLoginRegistration];
-    //}
-    
     [PFAnalytics trackAppOpenedWithLaunchOptions:launchOptions];
+    
+    // Initialize memory for the friends model
+    FriendsModel* SharedFriendModel = [FriendsModel GetSharedInstance];
+    [SharedFriendModel initialize];
+    
+    // Make the status bar color light
+    //[[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
+    
+    // Initialize window programatically so that storyboard can be selected programatically
+    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+    
+    // If the user has previously logged in on this device:
+    if ([PFUser currentUser]) {
+        // Get shared location model
+        LocationModel *GetSharedModel = [LocationModel getSharedInstance];
+        // Declare location as not updated in model
+        GetSharedModel.updatedThisSession = NO;
+        
+        
+        // Go straight to the Turnt home screen ("Main Controller":RootViewController -> "Activity Feed":MainViewController)
+        [self presentMainView];
+    } else {
+        // Go to Account Creation/Login ("Login and Registration":LoginViewController)
+        [self presentLoginRegistration];
+    }
     
     return YES;
 }
+
 
 - (void)applicationWillResignActive:(UIApplication *)application {
     // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
@@ -46,6 +64,11 @@
 - (void)applicationDidEnterBackground:(UIApplication *)application {
     // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
     // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
+
+    
+    // [[START LOCATION BACKGROUND UPDATES]]
+    
+    
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {
@@ -62,27 +85,38 @@
     [self saveContext];
 }
 
-#pragma mark View Presentation Functions
+-(UIStatusBarStyle)preferredStatusBarStyle{
+    return UIStatusBarStyleLightContent;
+}
+
+#pragma mark - View Presentation Functions
 
 - (void)presentMainView {
+    self.storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+    self.viewController = [self.storyboard instantiateViewControllerWithIdentifier:@"rootController"];
     
-    UIStoryboard * storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
-    UIViewController * viewController = [storyboard instantiateViewControllerWithIdentifier:@"Homies"];
-    
-    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-    self.window.rootViewController = viewController;
+    self.window.rootViewController = self.viewController;
     [self.window makeKeyAndVisible];
+    
 }
+
 
 - (void)presentLoginRegistration {
-    UIStoryboard * storyboard = [UIStoryboard storyboardWithName:@"LoginReg" bundle:nil];
-    UIViewController * viewController = [storyboard instantiateViewControllerWithIdentifier:@"LoginNigga"];
+    self.storyboard = [UIStoryboard storyboardWithName:@"LoginReg" bundle:nil];
+    self.viewController = [self.storyboard instantiateViewControllerWithIdentifier:@"LoginNigga"];
     
-    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-    self.window.rootViewController = viewController;
+    self.window.rootViewController = self.viewController;
     [self.window makeKeyAndVisible];
 }
 
+- (void)presentManageFriends {
+    self.storyboard = [UIStoryboard storyboardWithName:@"ManageFriends" bundle:nil];
+    self.viewController = [self.storyboard instantiateViewControllerWithIdentifier:@"ManageFriends"];
+    
+
+    self.window.rootViewController = self.viewController;
+    [self.window makeKeyAndVisible];
+}
 
 #pragma mark - Core Data stack
 

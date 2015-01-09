@@ -39,11 +39,7 @@
 
 - (BOOL)shouldPerformSegueWithIdentifier:(NSString *)identifier sender:(id)sender
 {
-    
-    NSLog(@"\n--Entered shouldperformsegue while logging in");
-
-    return YES;
-     
+        return YES;
 }
 
 - (IBAction)LoginMeow:(id)sender {
@@ -58,17 +54,39 @@
                                                   cancelButtonTitle:@"OK"
                                                   otherButtonTitles:nil];
             [alert show];
-            
+            // Go to main view
             [self performSegueWithIdentifier:@"LoginMeow" sender:sender];
             
         } else {
             // The login failed. Check error to see why.
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error"
-                                                            message:error.description
-                                                           delegate:nil
-                                                  cancelButtonTitle:@"OK"
-                                                  otherButtonTitles:nil];
-            [alert show];
+            if (error.code == 101) {
+                // Display a pretty error for invalid credentials
+                UIAlertView *noCred = [[UIAlertView alloc] initWithTitle:@"Username/Password Not Found"
+                                                                message:@"Can u spel? Or you might be drunk, sorry."
+                                                               delegate:nil
+                                                      cancelButtonTitle:@"OK"
+                                                      otherButtonTitles:nil];
+                [noCred show];
+            }
+            else if (error.code == 100) {
+                // Display a pretty error for no network connection
+                UIAlertView *noConnection = [[UIAlertView alloc] initWithTitle:@"The login server could not be reached"
+                                                                 message:@"Please ensure that you are connected to the internet and try again."
+                                                                delegate:nil
+                                                       cancelButtonTitle:@"OK"
+                                                       otherButtonTitles:nil];
+                [noConnection show];
+            }
+            else {
+                // Explain other errors with ugly parse description
+                UIAlertView *otherAlert = [[UIAlertView alloc] initWithTitle:@"Error"
+                                                                message:error.description
+                                                               delegate:nil
+                                                      cancelButtonTitle:@"OK"
+                                                      otherButtonTitles:nil];
+                [otherAlert show];
+            }
+
         }
     }];
     

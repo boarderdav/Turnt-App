@@ -12,6 +12,6 @@
 
 @property (strong, nonatomic) IBOutlet UILabel *ContactNameLabel;
 @property (strong, nonatomic) IBOutlet UILabel *UsernameLabel;
-@property (strong, nonatomic) IBOutlet UILabel *NumberLabel;
+@property (strong, nonatomic) IBOutlet UIButton *FollowButton;
 
 @end

@@ -1,13 +1,18 @@
 //
-//  MainViewController.h
-//  Turnt_1
+//  DEMOFirstViewController.h
+//  RESideMenuStoryboards
 //
-//  Created by Jake Spracher on 1/2/15.
-//  Copyright (c) 2015 Turnt Apps. All rights reserved.
+//  Created by Roman Efimov on 10/9/13.
+//  Copyright (c) 2013 Roman Efimov. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
+#import "RESideMenu.h"
 
-@interface MainViewController : UITabBarController
+
+@interface MainViewController : UIViewController <UITableViewDelegate, UITableViewDataSource> {
+    IBOutlet UITableView *tableView;
+}
+
 
 @end

@@ -10,6 +10,4 @@
 
 @interface FindFriendsTableViewController : UITableViewController
 
-@property (nonatomic, strong) NSMutableArray *Names;
-
 @end

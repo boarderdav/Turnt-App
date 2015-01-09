@@ -9,13 +9,14 @@
 #import <UIKit/UIKit.h>
 #import <CoreData/CoreData.h>
 
+
 /*
  General valuable info to read first:
  
  how function declarations and calls work:
  http://jojitsoriano.wordpress.com/2010/08/06/declaring-objective-c-methods/
  
- note that functions can ONLY exist as part of classes, which are explained here:
+ note that functions can basically only exist as part of classes, which are explained here:
  https://developer.apple.com/library/ios/documentation/Cocoa/Conceptual/ProgrammingWithObjectiveC/DefiningClasses/DefiningClasses.html
  
  ^That one explains 99.9% of the difference between obj C and C++
@@ -24,7 +25,7 @@
  
  "WTF is a protocol? Why does it have a function whats the difference??" I got you: https://developer.apple.com/library/ios/documentation/Cocoa/Conceptual/ProgrammingWithObjectiveC/WorkingwithProtocols/WorkingwithProtocols.html#//apple_ref/doc/uid/TP40011210-CH11-SW1
  
- "now what is a delegate??" Delegates handle events from generic other shit, see https://developer.apple.com/library/ios/documentation/General/Conceptual/CocoaEncyclopedia/DelegatesandDataSources/DelegatesandDataSources.html
+ "What is a delegate??" Delegates handle events from generic other shit, see https://developer.apple.com/library/ios/documentation/General/Conceptual/CocoaEncyclopedia/DelegatesandDataSources/DelegatesandDataSources.html
  
  */
 
@@ -32,6 +33,8 @@
 @interface AppDelegate : UIResponder <UIApplicationDelegate>
 
 @property (strong, nonatomic) UIWindow *window;
+@property (strong, nonatomic) UIStoryboard * storyboard;
+@property (strong, nonatomic) UIViewController *viewController;
 //@property (nonatomic, strong) UINavigationController *navigationController;
 
 @property (readonly, strong, nonatomic) NSManagedObjectContext *managedObjectContext;

@@ -28,7 +28,7 @@
 // only segue is to find friends table, so this is the registering function as well
 - (BOOL)shouldPerformSegueWithIdentifier:(NSString *)identifier sender:(id)sender
 {
-    
+    /*
     NSLog(@"\nEntered shouldperformsegue while registering");
     
     // ensure all fields are entered
@@ -93,7 +93,8 @@
     }
     
     return NO;
-
+    */
+    return YES;
 }
 
 // To find friends table
