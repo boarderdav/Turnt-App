@@ -7,10 +7,15 @@
 //
 
 #import "MapViewController.h"
+#import "PersonAnnotation.h"
+#import "FriendsModel.h"
 
 @interface MapViewController ()
 
+
 @end
+
+
 
 @implementation MapViewController
 
@@ -42,8 +47,32 @@
     [locationManager setDistanceFilter:kCLDistanceFilterNone];
     [locationManager setDesiredAccuracy:kCLLocationAccuracyBest];
     
+    // Put annotations on the map:
+    
+    FriendsModel *SharedFriendsModel = [FriendsModel GetSharedInstance];
+    
+    for (PFUser *u in SharedFriendsModel.Friends) {
+    
+        PFGeoPoint *Coord = u[@"CurrentLocation"];
+        CLLocationCoordinate2D loc = CLLocationCoordinate2DMake(Coord.latitude, Coord.longitude);
+        PersonAnnotation *annoation = [[PersonAnnotation alloc] initWithTitle:u[@"username"] Location:loc];
+        [mapView addAnnotation:annoation];
+    }
+    
+    
 
 }
+
+
+-(void)mapView:(MKMapView *)amapView didUpdateUserLocation:(MKUserLocation *)userLocation{
+ 
+    CLLocationCoordinate2D coord = amapView.userLocation.location.coordinate;
+    MKCoordinateRegion region = MKCoordinateRegionMakeWithDistance(coord, 1000, 1000);
+    
+    [mapView setRegion:region animated:YES];
+    
+}
+
 
 - (void)requestAlwaysAuthorization
 {

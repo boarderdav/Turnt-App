@@ -36,6 +36,7 @@ static FriendsModel* instance;
 // Allocate memory/Initialize custom queue
 -(void)initialize {
         Friends = [[NSMutableArray alloc] init];
+        FriendFullNames = [[NSMutableArray alloc] init];
         ContactMatches = [[NSMutableArray alloc] init];
         ContactMatchFullNames = [[NSMutableArray alloc] init];
         ReadWriteQueue = dispatch_queue_create("readwriteQueue",0);
@@ -44,6 +45,7 @@ static FriendsModel* instance;
 // Remove all stored information (For logout or something)
 -(void)clear {
     [Friends removeAllObjects];
+    [FriendFullNames removeAllObjects];
     [ContactMatches removeAllObjects];
     [ContactMatchFullNames removeAllObjects];
     
@@ -52,7 +54,7 @@ static FriendsModel* instance;
 #pragma mark - Friend Management Utilites
 
 // Get the name associated with a number from the address book (full names arent stored on the server, preference given to contact names which differ by user)
-- (NSString *)FindNameByNumber:(NSString*)Number {
++ (NSString *)FindNameByNumber:(NSString*)Number {
     
     // clean the number of extra characters
     NSString *toFind = [[Number componentsSeparatedByCharactersInSet:[[NSCharacterSet decimalDigitCharacterSet] invertedSet]] componentsJoinedByString:@""];
@@ -69,11 +71,6 @@ static FriendsModel* instance;
         // get this contact
         ABRecordRef person = CFArrayGetValueAtIndex( allPeople, i );
         
-        // get the contact's name
-        NSString *firstName = (__bridge NSString *)(ABRecordCopyValue(person, kABPersonFirstNameProperty));
-        NSString *lastName = (__bridge NSString *)(ABRecordCopyValue(person, kABPersonLastNameProperty));
-        NSString *fullName = [NSString stringWithFormat:@"%@ %@",firstName,lastName];
-        
         // Get all of the phone numbers for this contact
         ABMultiValueRef phoneNumbers = ABRecordCopyValue(person, kABPersonPhoneProperty);
         
@@ -88,6 +85,11 @@ static FriendsModel* instance;
             // If its the one were looking for
             if ([cleaned isEqualToString:toFind]) {
                 
+                // get the contact's name
+                NSString *firstName = (__bridge NSString *)(ABRecordCopyValue(person, kABPersonFirstNameProperty));
+                NSString *lastName = (__bridge NSString *)(ABRecordCopyValue(person, kABPersonLastNameProperty));
+                NSString *fullName = [NSString stringWithFormat:@"%@ %@",firstName,lastName];
+
                 // return the user's name
                 return fullName;
             }
@@ -107,34 +109,35 @@ static FriendsModel* instance;
         // Add the user to the friends model in the background
 
         [Friends addObject:ToFollow];
-        [FriendFullNames addObject:[self FindNameByNumber:ToFollow[@"phone"]]];
+        [FriendFullNames addObject:[ FriendsModel FindNameByNumber:ToFollow[@"phone"]]];
 
         // create an entry in the Follow table
         PFObject *follow = [PFObject objectWithClassName:@"Follow"];
         [follow setObject:[PFUser currentUser]  forKey:@"From"];
         [follow setObject:ToFollow forKey:@"To"];
-        [follow saveInBackground];
+        [follow save];
     });
 }
 
--(void)UnfollowUser:(NSString *)username{
+-(void)UnfollowUser:(PFUser *)user{
     //Protect from simulaneous reading and writing to model
     dispatch_barrier_async(ReadWriteQueue, ^{
         // query for follow
         PFQuery *FollowQuery = [PFQuery queryWithClassName:@"Follow"];
         [FollowQuery whereKey:@"From" equalTo:[PFUser currentUser]];
-        [FollowQuery whereKey:@"ToUsername" equalTo:username];
+        [FollowQuery whereKey:@"To" equalTo:user];
         
+        // remove from server
         [FollowQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
             // remove the follow in the background
             for (PFObject *o in objects) {
-                [o deleteInBackground];
+                [o delete];
             }
         }];
    
         // remove the object from the friend model (Consider revising implementation to make use of dictionary to reduce time complexity here)
         for (int i = 0; i < Friends.count; i++) {
-            if ([Friends[i][@"username"] isEqualToString:username]) {
+            if ([Friends[i][@"username"] isEqualToString:[user objectForKey:@"username"]]) {
                 [Friends removeObjectAtIndex:i];
                 [FriendFullNames removeObjectAtIndex:i];
             }

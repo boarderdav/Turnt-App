@@ -19,7 +19,6 @@
 @property (nonatomic, strong) NSMutableArray *MatchUsers;
 @property (nonatomic, strong) NSMutableArray *MatchContactNames;
 
-
 @end
 
 @implementation ManageFriendsViewController
@@ -87,7 +86,7 @@
                         // save the matching users
                         if (objects.count > 0) {
                             [SharedFriendsModel.ContactMatches addObjectsFromArray:objects];
-                            [SharedFriendsModel.ContactMatchFullNames addObject:[SharedFriendsModel FindNameByNumber:phoneNumber]];
+                            [SharedFriendsModel.ContactMatchFullNames addObject:[FriendsModel FindNameByNumber:phoneNumber]];
                             
                             //NSLog(@"Contact Matches: %lu", (unsigned long)self.MatchUsers.count );
                             dispatch_async(dispatch_get_main_queue(), ^{
@@ -116,6 +115,7 @@
     // Dispose of any resources that can be recreated.
 }
 
+
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     return 1;
 }
@@ -135,13 +135,56 @@
     
     // The dequeue reusable cell thing is memory saving reusable cell magic mumbo jumbo
     FriendCell *cell = [tableView dequeueReusableCellWithIdentifier:@"FriendCell"];
-    
+
     int row = [indexPath row];
     cell.UsernameLabel.text = SharedFriendsModel.ContactMatches[row][@"username"];//[self.MatchUsers[row][@"username"];
+    cell.User = SharedFriendsModel.ContactMatches[row];
     cell.ContactNameLabel.text = SharedFriendsModel.ContactMatchFullNames[row];
+    
+    // Figure out if the button should say follow or unfollow:
+    
+    // Check if cached friends are available, if not get them
+    if (SharedFriendsModel.Friends.count == 0) {
+        // Query the join table for follows originating from this user
+        PFQuery *friendsQuery = [PFQuery queryWithClassName:@"Follow"];
+        [friendsQuery whereKey:@"From" equalTo:[PFUser currentUser]];
+        
+        NSArray *objects = [friendsQuery findObjects];
+        for(PFObject *o in objects) {
+            // get the user being followed
+            PFUser* otherUser = [o objectForKey:@"To"];
+            [otherUser fetch];
+            // cache it
+            [SharedFriendsModel.Friends addObject:otherUser];
+            [SharedFriendsModel.FriendFullNames addObject:[FriendsModel FindNameByNumber:[otherUser objectForKey:@"phone"]]];
+        }
+    }
+
+    for (PFUser *u in SharedFriendsModel.Friends) {
+        if ([[u objectForKey:@"username"] isEqualToString:cell.UsernameLabel.text]) {
+            // Set the cells user:
+            cell.User = u;
+            
+            [cell.FollowButton setTitle: @"Unfollow" forState: UIControlStateNormal];
+            [cell.FollowButton setTitle: @"Unfollow" forState: UIControlStateApplication];
+            [cell.FollowButton setTitle: @"Unfollow" forState: UIControlStateHighlighted];
+            [cell.FollowButton setTitle: @"Unfollow" forState: UIControlStateReserved];
+            [cell.FollowButton setTitle: @"Unfollow" forState: UIControlStateDisabled];
+            cell.Followed = YES;
+        }
+    }
+    
+    if (cell.Followed != YES) {
+        [cell.FollowButton setTitle: @"Follow" forState: UIControlStateNormal];
+        [cell.FollowButton setTitle: @"Follow" forState: UIControlStateApplication];
+        [cell.FollowButton setTitle: @"Follow" forState: UIControlStateHighlighted];
+        [cell.FollowButton setTitle: @"Follow" forState: UIControlStateReserved];
+        [cell.FollowButton setTitle: @"Follow" forState: UIControlStateDisabled];
+        cell.Followed = NO;
+    }
+    
     return cell;
 }
-
 
 /*
 #pragma mark - Navigation

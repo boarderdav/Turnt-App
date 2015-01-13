@@ -9,6 +9,17 @@
 /* Begin PBXBuildFile section */
 		B26C56B11A59D39E0075AEA1 /* NewCliqueViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B26C56B01A59D39E0075AEA1 /* NewCliqueViewController.m */; };
 		B26C56B41A5A06020075AEA1 /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B26C56B31A5A06020075AEA1 /* SettingsViewController.m */; };
+		B270E8EB1A607FE400FEA5A7 /* MJPopupBackgroundView.m in Sources */ = {isa = PBXBuildFile; fileRef = B270E8E81A607FE400FEA5A7 /* MJPopupBackgroundView.m */; };
+		B270E8EC1A607FE400FEA5A7 /* UIViewController+MJPopupViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B270E8EA1A607FE400FEA5A7 /* UIViewController+MJPopupViewController.m */; };
+		B270E8FB1A60E39900FEA5A7 /* MHCustomTabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = B270E8F81A60E39900FEA5A7 /* MHCustomTabBarController.m */; };
+		B270E8FC1A60E39900FEA5A7 /* MHTabBarSegue.m in Sources */ = {isa = PBXBuildFile; fileRef = B270E8FA1A60E39900FEA5A7 /* MHTabBarSegue.m */; };
+		B270E9051A60E63700FEA5A7 /* UpdatePlansPopupSegue.m in Sources */ = {isa = PBXBuildFile; fileRef = B270E9041A60E63700FEA5A7 /* UpdatePlansPopupSegue.m */; };
+		B270E9071A60E8D200FEA5A7 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B270E9061A60E8D200FEA5A7 /* Main.storyboard */; };
+		B270E90D1A60EA3D00FEA5A7 /* UpdatePlansView.m in Sources */ = {isa = PBXBuildFile; fileRef = B270E90C1A60EA3D00FEA5A7 /* UpdatePlansView.m */; };
+		B270E9631A62C67100FEA5A7 /* PersonAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = B270E9621A62C67100FEA5A7 /* PersonAnnotation.m */; };
+		B270E9661A62C68800FEA5A7 /* PartyAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = B270E9651A62C68700FEA5A7 /* PartyAnnotation.m */; };
+		B270E9691A62E71700FEA5A7 /* UpdateLocationView.m in Sources */ = {isa = PBXBuildFile; fileRef = B270E9681A62E71700FEA5A7 /* UpdateLocationView.m */; };
+		B270E96C1A62E75000FEA5A7 /* UpdateLocationPopupSegue.m in Sources */ = {isa = PBXBuildFile; fileRef = B270E96B1A62E75000FEA5A7 /* UpdateLocationPopupSegue.m */; };
 		B29CEDC71A573B8C0076F213 /* RBStoryboardLink.m in Sources */ = {isa = PBXBuildFile; fileRef = B29CEDBB1A573B8C0076F213 /* RBStoryboardLink.m */; };
 		B29CEDC81A573B8C0076F213 /* RBStoryboardModalSegue.m in Sources */ = {isa = PBXBuildFile; fileRef = B29CEDBE1A573B8C0076F213 /* RBStoryboardModalSegue.m */; };
 		B29CEDC91A573B8C0076F213 /* RBStoryboardPopoverSegue.m in Sources */ = {isa = PBXBuildFile; fileRef = B29CEDC01A573B8C0076F213 /* RBStoryboardPopoverSegue.m */; };
@@ -23,7 +34,6 @@
 		B2D6F6BE1A5880DA00185D32 /* RightMenuViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B2D6F6B41A5880DA00185D32 /* RightMenuViewController.m */; };
 		B2D6F6BF1A5880DA00185D32 /* RootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B2D6F6B61A5880DA00185D32 /* RootViewController.m */; };
 		B2D6F6C01A5880DA00185D32 /* MapViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B2D6F6B81A5880DA00185D32 /* MapViewController.m */; };
-		B2D6F6C31A58811400185D32 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B2D6F6C21A58811400185D32 /* Main.storyboard */; };
 		B2D6F6C91A58DCCB00185D32 /* CliquesTabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = B2D6F6C61A58DCCB00185D32 /* CliquesTabBarController.m */; };
 		B2D6F6CA1A58DCCB00185D32 /* CliquesTabBarSegue.m in Sources */ = {isa = PBXBuildFile; fileRef = B2D6F6C81A58DCCB00185D32 /* CliquesTabBarSegue.m */; };
 		B2D6F6CF1A58F80600185D32 /* NewClique.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B2D6F6CE1A58F80600185D32 /* NewClique.storyboard */; };
@@ -82,6 +92,27 @@
 		B26C56B01A59D39E0075AEA1 /* NewCliqueViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NewCliqueViewController.m; path = Turnt_1/NewCliqueViewController.m; sourceTree = "<group>"; };
 		B26C56B21A5A06020075AEA1 /* SettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SettingsViewController.h; path = Turnt_1/SettingsViewController.h; sourceTree = "<group>"; };
 		B26C56B31A5A06020075AEA1 /* SettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SettingsViewController.m; path = Turnt_1/SettingsViewController.m; sourceTree = "<group>"; };
+		B270E8E71A607FE400FEA5A7 /* MJPopupBackgroundView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MJPopupBackgroundView.h; path = MJPopup/MJPopupBackgroundView.h; sourceTree = "<group>"; };
+		B270E8E81A607FE400FEA5A7 /* MJPopupBackgroundView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MJPopupBackgroundView.m; path = MJPopup/MJPopupBackgroundView.m; sourceTree = "<group>"; };
+		B270E8E91A607FE400FEA5A7 /* UIViewController+MJPopupViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIViewController+MJPopupViewController.h"; path = "MJPopup/UIViewController+MJPopupViewController.h"; sourceTree = "<group>"; };
+		B270E8EA1A607FE400FEA5A7 /* UIViewController+MJPopupViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIViewController+MJPopupViewController.m"; path = "MJPopup/UIViewController+MJPopupViewController.m"; sourceTree = "<group>"; };
+		B270E8F71A60E39800FEA5A7 /* MHCustomTabBarController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MHCustomTabBarController.h; path = MHCustomTabBarController/MHCustomTabBarController.h; sourceTree = "<group>"; };
+		B270E8F81A60E39900FEA5A7 /* MHCustomTabBarController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MHCustomTabBarController.m; path = MHCustomTabBarController/MHCustomTabBarController.m; sourceTree = "<group>"; };
+		B270E8F91A60E39900FEA5A7 /* MHTabBarSegue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MHTabBarSegue.h; path = MHCustomTabBarController/MHTabBarSegue.h; sourceTree = "<group>"; };
+		B270E8FA1A60E39900FEA5A7 /* MHTabBarSegue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MHTabBarSegue.m; path = MHCustomTabBarController/MHTabBarSegue.m; sourceTree = "<group>"; };
+		B270E9031A60E63700FEA5A7 /* UpdatePlansPopupSegue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UpdatePlansPopupSegue.h; path = Turnt_1/UpdatePlansPopupSegue.h; sourceTree = "<group>"; };
+		B270E9041A60E63700FEA5A7 /* UpdatePlansPopupSegue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = UpdatePlansPopupSegue.m; path = Turnt_1/UpdatePlansPopupSegue.m; sourceTree = "<group>"; };
+		B270E9061A60E8D200FEA5A7 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = Main.storyboard; path = Turnt_1/Main.storyboard; sourceTree = "<group>"; };
+		B270E90B1A60EA3D00FEA5A7 /* UpdatePlansView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UpdatePlansView.h; path = Turnt_1/UpdatePlansView.h; sourceTree = "<group>"; };
+		B270E90C1A60EA3D00FEA5A7 /* UpdatePlansView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = UpdatePlansView.m; path = Turnt_1/UpdatePlansView.m; sourceTree = "<group>"; };
+		B270E9611A62C67100FEA5A7 /* PersonAnnotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PersonAnnotation.h; path = Turnt_1/PersonAnnotation.h; sourceTree = "<group>"; };
+		B270E9621A62C67100FEA5A7 /* PersonAnnotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PersonAnnotation.m; path = Turnt_1/PersonAnnotation.m; sourceTree = "<group>"; };
+		B270E9641A62C68700FEA5A7 /* PartyAnnotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PartyAnnotation.h; path = Turnt_1/PartyAnnotation.h; sourceTree = "<group>"; };
+		B270E9651A62C68700FEA5A7 /* PartyAnnotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PartyAnnotation.m; path = Turnt_1/PartyAnnotation.m; sourceTree = "<group>"; };
+		B270E9671A62E71700FEA5A7 /* UpdateLocationView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UpdateLocationView.h; path = Turnt_1/UpdateLocationView.h; sourceTree = "<group>"; };
+		B270E9681A62E71700FEA5A7 /* UpdateLocationView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = UpdateLocationView.m; path = Turnt_1/UpdateLocationView.m; sourceTree = "<group>"; };
+		B270E96A1A62E75000FEA5A7 /* UpdateLocationPopupSegue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UpdateLocationPopupSegue.h; path = Turnt_1/UpdateLocationPopupSegue.h; sourceTree = "<group>"; };
+		B270E96B1A62E75000FEA5A7 /* UpdateLocationPopupSegue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = UpdateLocationPopupSegue.m; path = Turnt_1/UpdateLocationPopupSegue.m; sourceTree = "<group>"; };
 		B29CEDBA1A573B8C0076F213 /* RBStoryboardLink.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RBStoryboardLink.h; path = "Storyboard Link Classes/RBStoryboardLink.h"; sourceTree = "<group>"; };
 		B29CEDBB1A573B8C0076F213 /* RBStoryboardLink.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RBStoryboardLink.m; path = "Storyboard Link Classes/RBStoryboardLink.m"; sourceTree = "<group>"; };
 		B29CEDBC1A573B8C0076F213 /* RBStoryboardLinkSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RBStoryboardLinkSource.h; path = "Storyboard Link Classes/RBStoryboardLinkSource.h"; sourceTree = "<group>"; };
@@ -111,7 +142,6 @@
 		B2D6F6B61A5880DA00185D32 /* RootViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RootViewController.m; path = Turnt_1/RootViewController.m; sourceTree = "<group>"; };
 		B2D6F6B71A5880DA00185D32 /* MapViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MapViewController.h; path = Turnt_1/MapViewController.h; sourceTree = "<group>"; };
 		B2D6F6B81A5880DA00185D32 /* MapViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MapViewController.m; path = Turnt_1/MapViewController.m; sourceTree = "<group>"; };
-		B2D6F6C21A58811400185D32 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = Main.storyboard; path = Turnt_1/Main.storyboard; sourceTree = "<group>"; };
 		B2D6F6C51A58DCCB00185D32 /* CliquesTabBarController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CliquesTabBarController.h; path = MHCustomTabBarController/CliquesTabBarController.h; sourceTree = "<group>"; };
 		B2D6F6C61A58DCCB00185D32 /* CliquesTabBarController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CliquesTabBarController.m; path = MHCustomTabBarController/CliquesTabBarController.m; sourceTree = "<group>"; };
 		B2D6F6C71A58DCCB00185D32 /* CliquesTabBarSegue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CliquesTabBarSegue.h; path = MHCustomTabBarController/CliquesTabBarSegue.h; sourceTree = "<group>"; };
@@ -234,6 +264,17 @@
 			name = Settings;
 			sourceTree = "<group>";
 		};
+		B270E8ED1A607FE800FEA5A7 /* MJPopupController */ = {
+			isa = PBXGroup;
+			children = (
+				B270E8E71A607FE400FEA5A7 /* MJPopupBackgroundView.h */,
+				B270E8E81A607FE400FEA5A7 /* MJPopupBackgroundView.m */,
+				B270E8E91A607FE400FEA5A7 /* UIViewController+MJPopupViewController.h */,
+				B270E8EA1A607FE400FEA5A7 /* UIViewController+MJPopupViewController.m */,
+			);
+			name = MJPopupController;
+			sourceTree = "<group>";
+		};
 		B29CEDCD1A573B900076F213 /* Storyboard Link */ = {
 			isa = PBXGroup;
 			children = (
@@ -272,6 +313,10 @@
 		B2D6F6C41A58DCB200185D32 /* MHCustomTabBarController */ = {
 			isa = PBXGroup;
 			children = (
+				B270E8F71A60E39800FEA5A7 /* MHCustomTabBarController.h */,
+				B270E8F81A60E39900FEA5A7 /* MHCustomTabBarController.m */,
+				B270E8F91A60E39900FEA5A7 /* MHTabBarSegue.h */,
+				B270E8FA1A60E39900FEA5A7 /* MHTabBarSegue.m */,
 			);
 			name = MHCustomTabBarController;
 			sourceTree = "<group>";
@@ -297,6 +342,10 @@
 		B2D6F6CC1A58EA9900185D32 /* Map */ = {
 			isa = PBXGroup;
 			children = (
+				B270E9641A62C68700FEA5A7 /* PartyAnnotation.h */,
+				B270E9651A62C68700FEA5A7 /* PartyAnnotation.m */,
+				B270E9611A62C67100FEA5A7 /* PersonAnnotation.h */,
+				B270E9621A62C67100FEA5A7 /* PersonAnnotation.m */,
 				B2D6F6B71A5880DA00185D32 /* MapViewController.h */,
 				B2D6F6B81A5880DA00185D32 /* MapViewController.m */,
 			);
@@ -308,6 +357,14 @@
 			children = (
 				B2D73B921A5B8D15005C3F89 /* ActivityCell.h */,
 				B2D73B931A5B8D15005C3F89 /* ActivityCell.m */,
+				B270E90B1A60EA3D00FEA5A7 /* UpdatePlansView.h */,
+				B270E90C1A60EA3D00FEA5A7 /* UpdatePlansView.m */,
+				B270E9031A60E63700FEA5A7 /* UpdatePlansPopupSegue.h */,
+				B270E9041A60E63700FEA5A7 /* UpdatePlansPopupSegue.m */,
+				B270E9671A62E71700FEA5A7 /* UpdateLocationView.h */,
+				B270E9681A62E71700FEA5A7 /* UpdateLocationView.m */,
+				B270E96A1A62E75000FEA5A7 /* UpdateLocationPopupSegue.h */,
+				B270E96B1A62E75000FEA5A7 /* UpdateLocationPopupSegue.m */,
 				B2D6F6AF1A5880DA00185D32 /* MainViewController.h */,
 				B2D6F6B01A5880DA00185D32 /* MainViewController.m */,
 			);
@@ -353,6 +410,7 @@
 				B2E41DA51A54C2A200D03B2E /* Storyboards */,
 				B2D6F6971A58787800185D32 /* RESideMenu */,
 				B2D6F6C41A58DCB200185D32 /* MHCustomTabBarController */,
+				B270E8ED1A607FE800FEA5A7 /* MJPopupController */,
 				B29CEDCD1A573B900076F213 /* Storyboard Link */,
 				B2E41D331A54BDD400D03B2E /* Turnt_1 */,
 				B2E41D4D1A54BDD400D03B2E /* Turnt_1Tests */,
@@ -436,7 +494,7 @@
 			children = (
 				B2E41DA31A54C21500D03B2E /* LoginReg.storyboard */,
 				B2D6F6CE1A58F80600185D32 /* NewClique.storyboard */,
-				B2D6F6C21A58811400185D32 /* Main.storyboard */,
+				B270E9061A60E8D200FEA5A7 /* Main.storyboard */,
 				B2E41D5E1A54BE9F00D03B2E /* LaunchScreen.xib */,
 			);
 			name = Storyboards;
@@ -545,10 +603,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				B2E41DA41A54C21500D03B2E /* LoginReg.storyboard in Resources */,
+				B270E9071A60E8D200FEA5A7 /* Main.storyboard in Resources */,
 				B2E41D681A54BEA000D03B2E /* LaunchScreen.xib in Resources */,
 				B2D6F6CF1A58F80600185D32 /* NewClique.storyboard in Resources */,
 				B2E41D421A54BDD400D03B2E /* Images.xcassets in Resources */,
-				B2D6F6C31A58811400185D32 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -569,21 +627,31 @@
 				B29CEDCB1A573B8C0076F213 /* RBStoryboardSegue.m in Sources */,
 				B29CEDCC1A573B8C0076F213 /* UIViewController+RBStoryboardLink.m in Sources */,
 				B2D6F6A01A58788A00185D32 /* UIViewController+RESideMenu.m in Sources */,
+				B270E8EC1A607FE400FEA5A7 /* UIViewController+MJPopupViewController.m in Sources */,
+				B270E90D1A60EA3D00FEA5A7 /* UpdatePlansView.m in Sources */,
 				B2D6F6BE1A5880DA00185D32 /* RightMenuViewController.m in Sources */,
 				B2D6F69E1A58788A00185D32 /* RECommonFunctions.m in Sources */,
+				B270E9661A62C68800FEA5A7 /* PartyAnnotation.m in Sources */,
+				B270E8EB1A607FE400FEA5A7 /* MJPopupBackgroundView.m in Sources */,
 				B2D73B971A5B9E14005C3F89 /* FriendsModel.m in Sources */,
+				B270E9631A62C67100FEA5A7 /* PersonAnnotation.m in Sources */,
 				B29CEDCA1A573B8C0076F213 /* RBStoryboardPushSegue.m in Sources */,
 				B2D6F6DC1A59049200185D32 /* CliqueCell.m in Sources */,
 				B2D6F6D51A58FEAF00185D32 /* ManageCliquesViewController.m in Sources */,
+				B270E8FC1A60E39900FEA5A7 /* MHTabBarSegue.m in Sources */,
+				B270E9051A60E63700FEA5A7 /* UpdatePlansPopupSegue.m in Sources */,
 				B26C56B11A59D39E0075AEA1 /* NewCliqueViewController.m in Sources */,
 				B29CEDC81A573B8C0076F213 /* RBStoryboardModalSegue.m in Sources */,
+				B270E96C1A62E75000FEA5A7 /* UpdateLocationPopupSegue.m in Sources */,
 				B26C56B41A5A06020075AEA1 /* SettingsViewController.m in Sources */,
 				B29CEDC71A573B8C0076F213 /* RBStoryboardLink.m in Sources */,
+				B270E9691A62E71700FEA5A7 /* UpdateLocationView.m in Sources */,
 				B2D6F6CA1A58DCCB00185D32 /* CliquesTabBarSegue.m in Sources */,
 				B2D6F69F1A58788A00185D32 /* RESideMenu.m in Sources */,
 				B29CEDC91A573B8C0076F213 /* RBStoryboardPopoverSegue.m in Sources */,
 				B2D6F6BD1A5880DA00185D32 /* LeftMenuViewController.m in Sources */,
 				B2D6F6C01A5880DA00185D32 /* MapViewController.m in Sources */,
+				B270E8FB1A60E39900FEA5A7 /* MHCustomTabBarController.m in Sources */,
 				B2D6F6D91A58FFA000185D32 /* ManageFriendsViewController.m in Sources */,
 				B2E41D7B1A54BFD800D03B2E /* TableCell.m in Sources */,
 				B2D6F6BC1A5880DA00185D32 /* MainViewController.m in Sources */,

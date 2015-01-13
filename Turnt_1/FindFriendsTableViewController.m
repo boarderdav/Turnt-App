@@ -30,7 +30,6 @@
     // Make sure access to contacts is allowed
     if (ABAddressBookGetAuthorizationStatus() == kABAuthorizationStatusAuthorized) {
         
-
         CFErrorRef *error = NULL;
         ABAddressBookRef addressBook = ABAddressBookCreateWithOptions(NULL, error);
         CFArrayRef allPeople = ABAddressBookCopyArrayOfAllPeople(addressBook);
@@ -59,7 +58,6 @@
             ABMultiValueRef phoneNumbers = ABRecordCopyValue(person, kABPersonPhoneProperty);
             [[UIDevice currentDevice] name];
             
-            
             // Iterate all of the numbers
             for (CFIndex i = 0; i < ABMultiValueGetCount(phoneNumbers); i++) {
                 
@@ -84,7 +82,7 @@
                     
                     if (objects.count > 0) {
                         [SharedFriendsModel.ContactMatches addObjectsFromArray:objects];
-                        [SharedFriendsModel.ContactMatchFullNames addObject:[SharedFriendsModel FindNameByNumber:phoneNumber]];
+                        [SharedFriendsModel.ContactMatchFullNames addObject:[FriendsModel FindNameByNumber:phoneNumber]];
                         
                         //NSLog(@"Contact Matches: %lu", (unsigned long)self.MatchUsers.count );
                         dispatch_async(dispatch_get_main_queue(), ^{
@@ -94,7 +92,6 @@
                 }];
             }
         }
-        
     }
     else {
         // Send an alert telling user to change privacy setting in settings app
@@ -154,6 +151,7 @@
     
     int row = [indexPath row];
     cell.UsernameLabel.text = SharedFriendsModel.ContactMatches[row][@"username"];//[self.MatchUsers[row][@"username"];
+    cell.User = SharedFriendsModel.ContactMatches[row];
     cell.ContactNameLabel.text = SharedFriendsModel.ContactMatchFullNames[row];
     return cell;
 }

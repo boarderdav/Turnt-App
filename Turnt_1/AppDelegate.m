@@ -39,11 +39,12 @@
     
     // If the user has previously logged in on this device:
     if ([PFUser currentUser]) {
+        
         // Get shared location model
         LocationModel *GetSharedModel = [LocationModel getSharedInstance];
+        
         // Declare location as not updated in model
         GetSharedModel.updatedThisSession = NO;
-        
         
         // Go straight to the Turnt home screen ("Main Controller":RootViewController -> "Activity Feed":MainViewController)
         [self presentMainView];
@@ -100,7 +101,6 @@
     
 }
 
-
 - (void)presentLoginRegistration {
     self.storyboard = [UIStoryboard storyboardWithName:@"LoginReg" bundle:nil];
     self.viewController = [self.storyboard instantiateViewControllerWithIdentifier:@"LoginNigga"];
@@ -112,7 +112,6 @@
 - (void)presentManageFriends {
     self.storyboard = [UIStoryboard storyboardWithName:@"ManageFriends" bundle:nil];
     self.viewController = [self.storyboard instantiateViewControllerWithIdentifier:@"ManageFriends"];
-    
 
     self.window.rootViewController = self.viewController;
     [self.window makeKeyAndVisible];

@@ -8,14 +8,15 @@
 
 #import "FriendCell.h"
 #import "FriendsModel.h"
-#import <Parse/Parse.h>
 
 @implementation FriendCell
+@synthesize Followed;
 
 - (void)awakeFromNib {
     // Initialization code
-    Followed = false;
-    [self.FollowButton.titleLabel.text isEqualToString:@"Follow"];
+    NSLog(@"Username: %@", self.UsernameLabel.text);
+    // Collect information from the table if neccesary
+
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
@@ -31,14 +32,23 @@
     
     // follow or unfollow?
     if ([self.FollowButton.titleLabel.text isEqualToString:@"Follow"]) {
-        self.FollowButton.titleLabel.text = @"Unfollow";
+        [self.FollowButton setTitle: @"Unfollow" forState: UIControlStateNormal];
+        [self.FollowButton setTitle: @"Unfollow" forState: UIControlStateApplication];
+        [self.FollowButton setTitle: @"Unfollow" forState: UIControlStateHighlighted];
+        [self.FollowButton setTitle: @"Unfollow" forState: UIControlStateReserved];
+        [self.FollowButton setTitle: @"Unfollow" forState: UIControlStateDisabled];
+        Followed = false;
         // Follow the user
         [SharedFriendsModel FollowUser:self.UsernameLabel.text];
     }
     else {
-        self.FollowButton.titleLabel.text = @"Follow";
+        [self.FollowButton setTitle: @"Follow" forState: UIControlStateNormal];
+        [self.FollowButton setTitle: @"Follow" forState: UIControlStateApplication];
+        [self.FollowButton setTitle: @"Follow" forState: UIControlStateHighlighted];
+        [self.FollowButton setTitle: @"Follow" forState: UIControlStateReserved];
+        [self.FollowButton setTitle: @"Follow" forState: UIControlStateDisabled];
         // Unfollow the user
-        [SharedFriendsModel UnfollowUser:self.UsernameLabel.text];
+        [SharedFriendsModel UnfollowUser:self.User];
     }
 
 }

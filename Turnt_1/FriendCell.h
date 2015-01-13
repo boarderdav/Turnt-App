@@ -7,11 +7,12 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <Parse/Parse.h>
 
-@interface FriendCell : UITableViewCell {
-    bool *Followed;
-}
+@interface FriendCell : UITableViewCell 
 
+@property (nonatomic) bool Followed;
+@property (nonatomic, strong) PFUser *User;
 @property (strong, nonatomic) IBOutlet UILabel *ContactNameLabel;
 @property (strong, nonatomic) IBOutlet UILabel *UsernameLabel;
 @property (strong, nonatomic) IBOutlet UIButton *FollowButton;

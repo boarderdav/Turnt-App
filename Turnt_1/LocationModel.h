@@ -26,6 +26,7 @@
 @property(nonatomic,strong) id<LocationModelDelegate> delegate;
 
 @property(nonatomic) BOOL updatedThisSession;
+@property(nonatomic) int updateCounter;
 @property(nonatomic) CLLocationDegrees Lattitude;
 @property(nonatomic) CLLocationDegrees Longitude;
 

@@ -12,6 +12,7 @@
 
 @interface MainViewController : UIViewController <UITableViewDelegate, UITableViewDataSource> {
     IBOutlet UITableView *tableView;
+    IBOutlet UIButton *UpdatePlans;
 }
 
 

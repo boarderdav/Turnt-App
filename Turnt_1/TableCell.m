@@ -14,17 +14,30 @@
 
 - (IBAction)Follow:(id)sender {
     
+    // Get the friends model
     FriendsModel *SharedFriendsModel = [FriendsModel GetSharedInstance];
     
+    // follow or unfollow?
     if ([self.FollowButton.titleLabel.text isEqualToString:@"Follow"]) {
-        self.FollowButton.titleLabel.text = @"Unfollow";
+        [self.FollowButton setTitle: @"Unfollow" forState: UIControlStateNormal];
+        [self.FollowButton setTitle: @"Unfollow" forState: UIControlStateApplication];
+        [self.FollowButton setTitle: @"Unfollow" forState: UIControlStateHighlighted];
+        [self.FollowButton setTitle: @"Unfollow" forState: UIControlStateReserved];
+        [self.FollowButton setTitle: @"Unfollow" forState: UIControlStateDisabled];
         // Follow the user
+        
+        
+        
         [SharedFriendsModel FollowUser:self.UsernameLabel.text];
     }
     else {
-        self.FollowButton.titleLabel.text = @"Follow";
+        [self.FollowButton setTitle: @"Follow" forState: UIControlStateNormal];
+        [self.FollowButton setTitle: @"Follow" forState: UIControlStateApplication];
+        [self.FollowButton setTitle: @"Follow" forState: UIControlStateHighlighted];
+        [self.FollowButton setTitle: @"Follow" forState: UIControlStateReserved];
+        [self.FollowButton setTitle: @"Follow" forState: UIControlStateDisabled];
         // Unfollow the user
-        [SharedFriendsModel UnfollowUser:self.UsernameLabel.text];
+        [SharedFriendsModel UnfollowUser:self.User];
     }
 }
 

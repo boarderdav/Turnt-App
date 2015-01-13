@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <Parse/Parse.h>
 
 @interface FriendsModel : NSObject
 
@@ -25,8 +26,8 @@
 -(void)clear;
 
 // Get the current user's stored name for a contact associated with a number from the address book (full names arent stored on the server, preference given to contact names which differ by user)
--(NSString *)FindNameByNumber:(NSString*)Number;
++(NSString *)FindNameByNumber:(NSString*) Number;
 -(void)FollowUser:(NSString*)username;
--(void)UnfollowUser:(NSString*)username;
+-(void)UnfollowUser:(PFUser*)user;
 
 @end

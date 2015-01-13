@@ -54,13 +54,23 @@
                                     <segue destination="4kg-Rz-a7D" kind="custom" customClass="JSStoryboardPopPresentSegue" id="YPN-cE-4i3"/>
                                 </connections>
                             </button>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="bTm-sZ-0Qk">
+                                <rect key="frame" x="126" y="194" width="348" height="218"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="348" id="UoO-lz-pYE"/>
+                                </constraints>
+                            </tableView>
                         </subviews>
                         <constraints>
                             <constraint firstAttribute="centerX" secondItem="aDa-QI-nw2" secondAttribute="centerX" constant="-0.5" id="0FH-ou-JPc"/>
                             <constraint firstAttribute="centerX" secondItem="z2s-yc-arM" secondAttribute="centerX" constant="-0.5" id="8km-7V-Jfn"/>
+                            <constraint firstItem="aDa-QI-nw2" firstAttribute="top" secondItem="bTm-sZ-0Qk" secondAttribute="bottom" constant="8" id="Eh6-NH-nED"/>
                             <constraint firstAttribute="centerX" secondItem="uNi-RG-uzy" secondAttribute="centerX" id="JtJ-1k-rAW"/>
                             <constraint firstItem="WO7-rf-o7y" firstAttribute="top" secondItem="HiQ-86-8g6" secondAttribute="bottom" constant="-20" id="RJv-ey-Kpx"/>
+                            <constraint firstAttribute="centerX" secondItem="bTm-sZ-0Qk" secondAttribute="centerX" id="Sby-pq-z8A"/>
                             <constraint firstItem="wcj-it-LPz" firstAttribute="top" secondItem="WO7-rf-o7y" secondAttribute="bottom" id="Z8Y-vp-vuj"/>
+                            <constraint firstItem="bTm-sZ-0Qk" firstAttribute="top" secondItem="pur-tr-4yn" secondAttribute="bottom" id="pvP-Qa-wmU"/>
                             <constraint firstAttribute="centerX" secondItem="pur-tr-4yn" secondAttribute="centerX" id="x3K-JZ-d2N"/>
                         </constraints>
                     </view>
