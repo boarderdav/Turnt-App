@@ -8,7 +8,6 @@
 
 #import "FindFriendsTableViewController.h"
 #import "TableCell.h"
-#import "AppDelegate.h"
 #import "FriendsModel.h"
 #import <AddressBookUI/AddressBookUI.h>
 #import <AddressBook/AddressBook.h>
@@ -26,6 +25,8 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    self.navigationController.navigationBar.hidden = YES;
     
     // Make sure access to contacts is allowed
     if (ABAddressBookGetAuthorizationStatus() == kABAuthorizationStatusAuthorized) {
@@ -119,6 +120,7 @@
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
 }
 
+
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
@@ -136,7 +138,11 @@
     //Get the shared friends model
     FriendsModel *SharedFriendsModel = [FriendsModel GetSharedInstance];
     
-    return SharedFriendsModel.ContactMatches.count;
+    if (SharedFriendsModel.ContactMatches.count == 0) {
+        return 1;
+    }
+    else
+        return SharedFriendsModel.ContactMatches.count;
 }
 
 
@@ -149,11 +155,28 @@
     // The dequeue reusable cell thing is apple memory saving reusable cell magic mumbo jumbo
     TableCell *cell = [tableView dequeueReusableCellWithIdentifier:@"TableCell" forIndexPath:indexPath];
     
-    int row = [indexPath row];
-    cell.UsernameLabel.text = SharedFriendsModel.ContactMatches[row][@"username"];//[self.MatchUsers[row][@"username"];
-    cell.User = SharedFriendsModel.ContactMatches[row];
-    cell.ContactNameLabel.text = SharedFriendsModel.ContactMatchFullNames[row];
-    return cell;
+    if (SharedFriendsModel.ContactMatches.count == 0) {
+        cell.ContactNameLabel.text = @"No turnt users are in your contacts";
+        [cell.FollowButton setTitle: @"" forState: UIControlStateNormal];
+        [cell.FollowButton setTitle: @"" forState: UIControlStateApplication];
+        [cell.FollowButton setTitle: @"" forState: UIControlStateHighlighted];
+        [cell.FollowButton setTitle: @"" forState: UIControlStateReserved];
+        [cell.FollowButton setTitle: @"" forState: UIControlStateDisabled];
+        return cell;
+    }
+    else {
+        [cell.FollowButton setTitle: @"Follow" forState: UIControlStateNormal];
+        [cell.FollowButton setTitle: @"Follow" forState: UIControlStateApplication];
+        [cell.FollowButton setTitle: @"Follow" forState: UIControlStateHighlighted];
+        [cell.FollowButton setTitle: @"Follow" forState: UIControlStateReserved];
+        [cell.FollowButton setTitle: @"Follow" forState: UIControlStateDisabled];
+        int row = [indexPath row];
+        cell.UsernameLabel.text = SharedFriendsModel.ContactMatches[row][@"username"];//[self.MatchUsers[row][@"username"];
+        cell.User = SharedFriendsModel.ContactMatches[row];
+        cell.ContactNameLabel.text = SharedFriendsModel.ContactMatchFullNames[row];
+        return cell;
+    }
+
 }
 
 /*
@@ -193,10 +216,21 @@
 
 #pragma mark - Navigation
 
+-(IBAction)GoToLocOrMain:(id)sender {
+    if([[UIApplication sharedApplication] backgroundRefreshStatus] == UIBackgroundRefreshStatusAvailable &&
+       [CLLocationManager authorizationStatus] == kCLAuthorizationStatusAuthorizedAlways) {
+        [self performSegueWithIdentifier:@"ToMainStoryboard" sender:sender];
+    }
+    else{
+        [self performSegueWithIdentifier:@"LocationPrompt" sender:sender];
+    }
+    
+}
+
 // In a storyboard-based application, you will often want to do a little preparation before navigation
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
+    
+    
     NSLog(@"Preparing for segue");
 }
 

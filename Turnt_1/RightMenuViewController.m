@@ -21,7 +21,6 @@
 
 - (void)viewDidLoad
 {
-    NSLog(@"Did load");
     [super viewDidLoad];
     self.tableView = ({
         UITableView *tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, (self.view.frame.size.height - 54*2) / 2.0f, self.view.frame.size.width, 54 * 2) style:UITableViewStylePlain];

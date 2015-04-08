@@ -7,10 +7,15 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <Parse/Parse.h>
+#import "FriendsModel.h"
 
-@interface ActivityCell : UITableViewCell
+@interface ActivityCell : UITableViewCell {
+    BOOL informed;
+}
 
 @property (strong, nonatomic) IBOutlet UILabel *ContactNameLabel;
+@property (strong,nonatomic) PFUser* User;
 @property (strong, nonatomic) IBOutlet UILabel *LocationLabel;
 @property (strong, nonatomic) IBOutlet UILabel *EventLabel;
 @property (strong, nonatomic) IBOutlet UIButton *RollButton;

@@ -1,0 +1,20 @@
+//
+//  BackgroundTaskManager.h
+//
+//  Created by Puru Shukla on 20/02/13.
+//  Copyright (c) 2013 Puru Shukla. All rights reserved.
+//
+#import <Availability.h>
+#import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
+#import "BackgroundTaskManager.h"
+#import <CoreLocation/CoreLocation.h>
+
+@interface BackgroundTaskManager : NSObject
+
++(instancetype)sharedBackgroundTaskManager;
+
+-(UIBackgroundTaskIdentifier)beginNewBackgroundTask;
+-(void)endAllBackgroundTasks;
+
+@end

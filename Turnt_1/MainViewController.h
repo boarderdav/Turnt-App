@@ -8,12 +8,17 @@
 
 #import <UIKit/UIKit.h>
 #import "RESideMenu.h"
+#import "FriendsModel.h"
+#import "UpdatePlansView.h"
+#import "UpdateLocationView.h"
 
-
-@interface MainViewController : UIViewController <UITableViewDelegate, UITableViewDataSource> {
+@interface MainViewController : UIViewController <UITableViewDelegate, UITableViewDataSource, UIAlertViewDelegate, UpdatePlansViewDelegate> {
     IBOutlet UITableView *tableView;
     IBOutlet UIButton *UpdatePlans;
+    FriendsModel *SharedFriendsModel;
+    int loadedusers;
 }
+
 
 
 @end

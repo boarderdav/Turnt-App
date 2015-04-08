@@ -7,7 +7,19 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "FriendsModel.h"
+#import <Parse/Parse.h>
+#import "FriendCell.h"
 
-@interface NewCliqueViewController : UIViewController
+
+
+@interface NewCliqueViewController : UIViewController <UITableViewDelegate, UITableViewDataSource, UISearchBarDelegate, UITextViewDelegate> {
+    IBOutlet UITextField *CliqueName;
+    IBOutlet UITableView *tableView;
+    IBOutlet UISearchBar *searchBar;
+}
+
+@property (nonatomic, strong) NSMutableArray * displayContent;
+@property (nonatomic, strong) NSMutableArray * displayUsers;
 
 @end

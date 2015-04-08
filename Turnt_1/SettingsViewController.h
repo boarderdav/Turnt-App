@@ -8,8 +8,10 @@
 
 #import <UIKit/UIKit.h>
 
-@interface SettingsViewController : UIViewController {
+@interface SettingsViewController : UIViewController <UITableViewDelegate, UITableViewDataSource, UIAlertViewDelegate> {
+    IBOutlet UITableView *tableview;
     IBOutlet UIButton *Logout;
+    NSArray *Cells;
 }
 
 @end

@@ -9,8 +9,20 @@
 #import <UIKit/UIKit.h>
 #import "UIViewController+MJPopupViewController.h"
 
-@interface UpdateLocationView : UIViewController
+@class UpdateLocationView;
 
-@property (weak, nonatomic) IBOutlet UITextField *LocationDescription;
+@protocol UpdateLocationViewDelegate<NSObject>
+@optional
+- (void)cancelButtonClicked:(UpdateLocationView*)aUpdatePlansView;
+@end
+
+
+@interface UpdateLocationView : UIViewController <UITextViewDelegate> {
+    IBOutlet UITextView *LocationDescription;
+    IBOutlet UISegmentedControl *LocVenue;
+    BOOL Venue;
+}
+
+@property (assign, nonatomic) id <UpdateLocationViewDelegate> delegate;
 
 @end

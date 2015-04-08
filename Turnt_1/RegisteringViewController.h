@@ -7,8 +7,33 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <QuartzCore/QuartzCore.h>
+#import "JSTextField.h"
 
-@interface RegisteringViewController : UIViewController
+@class RegisteringViewController;
+
+@protocol RegisteringViewControllerDelegate <NSObject>
+
+-(BOOL) startLocUpdates;
+
+@end
+
+
+@interface RegisteringViewController: UIViewController <UITextFieldDelegate>
+{
+    IBOutlet UITextField *userField;
+    IBOutlet UITextField *numField;
+    IBOutlet UITextField *passConField;
+    IBOutlet UITextField *passField;
+    IBOutlet UISegmentedControl *gender;
+}
+
+@property (nonatomic, weak) id <RegisteringViewControllerDelegate> delegate;
+
+- (IBAction)userDismiss:(id)sender;
+- (IBAction)passDismiss:(id)sender;
+- (IBAction)passConDismiss:(id)sender;
+- (IBAction)numDismiss:(id)sender;
 
 
 @end

@@ -13,6 +13,6 @@
     IBOutlet UITableView *tableView;
 }
 
-
+@property (nonatomic, strong) NSMutableArray *Cliques;
 
 @end

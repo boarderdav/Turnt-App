@@ -7,6 +7,7 @@
 //
 
 #import "UpdatePlansView.h"
+#import "MainViewController.h"
 #import <Parse/Parse.h>
 
 @interface UpdatePlansView ()
@@ -18,6 +19,11 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+
+    PlansTextView.delegate = self;
+    PlansTextView.text = @"Tap to enter your plans here";
+    PlansTextView.textColor = [UIColor lightGrayColor];
     // Do any additional setup after loading the view.
 }
 
@@ -40,6 +46,39 @@
     
 }
 
+- (IBAction)Cancel:(id)sender {
+    
+    if (self.delegate && [self.delegate respondsToSelector:@selector(cancelButtonClicked:)]) {
+        [self.delegate cancelButtonClicked:self];
+    }
+    [self dismissPopupViewControllerWithanimationType:MJPopupViewAnimationSlideBottomBottom];
+    
+}
+
+
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
+{
+    // Return YES for supported orientations
+    return (interfaceOrientation == UIInterfaceOrientationPortrait);
+}
+
+- (void)textViewDidBeginEditing:(UITextView *)textView
+{
+    if ([textView.text isEqualToString:@"Tap to enter your plans here"]) {
+        textView.text = @"";
+        textView.textColor = [UIColor lightGrayColor]; //optional
+    }
+    [textView becomeFirstResponder];
+}
+
+- (void)textViewDidEndEditing:(UITextView *)textView
+{
+    if ([textView.text isEqualToString:@""]) {
+        textView.text = @"Tap to enter your plans here";
+        textView.textColor = [UIColor lightGrayColor]; //optional
+    }
+    [textView resignFirstResponder];
+}
 
 /*
 #pragma mark - Navigation

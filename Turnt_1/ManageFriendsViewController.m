@@ -15,25 +15,55 @@
 
 @interface ManageFriendsViewController ()
 
-@property (nonatomic, strong) NSMutableArray *Names;
-@property (nonatomic, strong) NSMutableArray *MatchUsers;
-@property (nonatomic, strong) NSMutableArray *MatchContactNames;
-
 @end
 
 @implementation ManageFriendsViewController
+@synthesize displayFriends;
+@synthesize displayFriendFullNames;
+@synthesize SectionTitle;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
+    // Force the Navigation Bar Color
+    self.navigationController.navigationBar.barTintColor = [UIColor darkGrayColor];
+    self.navigationController.navigationBar.translucent = YES;
+    
+    searchBar.keyboardAppearance = UIKeyboardAppearanceDark;
+    
+    SectionTitle = @"Users in Contacts";
+    
+    // Force the Navigation Bar Title font
+    [self.navigationController.navigationBar setTitleTextAttributes:
+     [NSDictionary dictionaryWithObjectsAndKeys:
+      [UIFont fontWithName:@"mplus-1c-regular" size:21],
+      NSFontAttributeName, nil]];
+    
     // Get Friends Model
     FriendsModel* SharedFriendsModel = [FriendsModel GetSharedInstance];
     
+    // allocate memory for display content
+    displayFriends = [[NSMutableArray alloc] init];
+    displayFriendFullNames = [[NSMutableArray alloc]init];
+    
     // If friends are avaiable, dont query the server
     if (SharedFriendsModel.ContactMatches.count == 0) {
-        // [tableView registerClass: [FriendCell class] forCellReuseIdentifier:@"FriendCell"];
-
+        
+        // Query the join table for follows originating from this user
+        PFQuery *friendsQuery = [PFQuery queryWithClassName:@"Follow"];
+        [friendsQuery whereKey:@"From" equalTo:[PFUser currentUser]];
+        
+        NSArray *objects = [friendsQuery findObjects];
+        for(PFObject *o in objects) {
+            // get the user being followed
+            PFUser* otherUser = [o objectForKey:@"To"];
+            [otherUser fetch];
+            // cache it
+            [SharedFriendsModel.Friends addObject:otherUser];
+            [SharedFriendsModel.FriendFullNames addObject:[FriendsModel FindNameByNumber:[otherUser objectForKey:@"phone"]]];
+        }
+        
         // Make sure access to contacts is allowed
         if (ABAddressBookGetAuthorizationStatus() == kABAuthorizationStatusAuthorized) {
             
@@ -41,9 +71,6 @@
             ABAddressBookRef addressBook = ABAddressBookCreateWithOptions(NULL, error);
             CFArrayRef allPeople = ABAddressBookCopyArrayOfAllPeople(addressBook);
             CFIndex numberOfPeople = ABAddressBookGetPersonCount(addressBook);
-            //Allocate memory for the array of contact matches!!
-            self.MatchUsers = [[NSMutableArray alloc] init];
-            self.MatchContactNames = [[NSMutableArray alloc] init];
             
             // iterate all of the contacts
             for(int i = 0; i < numberOfPeople; i++) {
@@ -51,10 +78,6 @@
                 // get this contact
                 ABRecordRef person = CFArrayGetValueAtIndex( allPeople, i );
                 
-                // get the contact's name
-                //NSString *firstName = (__bridge NSString *)(ABRecordCopyValue(person, kABPersonFirstNameProperty));
-                //NSString *lastName = (__bridge NSString *)(ABRecordCopyValue(person, kABPersonLastNameProperty));
-                //NSString *fullName = [NSString stringWithFormat:@"%@ %@",firstName,lastName];
                 
                 //NSLog(@"Name:%@ %@", firstName, lastName);
                 
@@ -74,6 +97,7 @@
                     NSString *cleaned = [[phoneNumber componentsSeparatedByCharactersInSet:[[NSCharacterSet decimalDigitCharacterSet] invertedSet] ] componentsJoinedByString:@""];
                     
                     //  Query the server for this number, this part defines the query function thing (from parse doc):
+                    
                     PFQuery *query = [PFUser query];
                     [query whereKey:@"phone" equalTo:cleaned]; // define a query that finds every user with this number
                     
@@ -85,6 +109,7 @@
                         NSLog(@"NumObjects: %lu", (unsigned long)objects.count );
                         // save the matching users
                         if (objects.count > 0) {
+                            
                             [SharedFriendsModel.ContactMatches addObjectsFromArray:objects];
                             [SharedFriendsModel.ContactMatchFullNames addObject:[FriendsModel FindNameByNumber:phoneNumber]];
                             
@@ -99,7 +124,7 @@
         }
         else {
             // Send an alert telling user to change privacy setting in settings app
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Quit being a GDI"
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Freshman Mistake"
                                                             message:@"Turnt needs access to your contacts to work, please go to your privacy settings and allow access."
                                                            delegate:nil
                                                   cancelButtonTitle:@"OK"
@@ -115,9 +140,25 @@
     // Dispose of any resources that can be recreated.
 }
 
+#pragma mark - Table View Functions
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     return 1;
+}
+
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
+    return SectionTitle;
+}
+
+- (void)tableView:(UITableView *)tableView willDisplayHeaderView:(UIView *)view forSection:(NSInteger)section
+{
+    // Background color
+    view.tintColor = [UIColor colorWithWhite:0.3 alpha:0.7];;
+    
+    // Text Color
+    UITableViewHeaderFooterView *header = (UITableViewHeaderFooterView *)view;
+    [header.textLabel setTextColor:[UIColor lightGrayColor]];
+    
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)sectionIndex
@@ -125,7 +166,13 @@
     //Get the shared friends model
     FriendsModel *SharedFriendsModel = [FriendsModel GetSharedInstance];
     
-    return SharedFriendsModel.ContactMatches.count;
+    if (displayFriends.count != 0) {
+        return displayFriends.count;
+    }
+    else{
+        return SharedFriendsModel.ContactMatches.count;
+    }
+    
 }
 
 - (UITableViewCell *)tableView:(UITableView *)atableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -136,30 +183,22 @@
     // The dequeue reusable cell thing is memory saving reusable cell magic mumbo jumbo
     FriendCell *cell = [tableView dequeueReusableCellWithIdentifier:@"FriendCell"];
 
-    int row = [indexPath row];
-    cell.UsernameLabel.text = SharedFriendsModel.ContactMatches[row][@"username"];//[self.MatchUsers[row][@"username"];
-    cell.User = SharedFriendsModel.ContactMatches[row];
-    cell.ContactNameLabel.text = SharedFriendsModel.ContactMatchFullNames[row];
+    if (displayFriends.count == 0) {
+        int row = [indexPath row];
+        cell.UsernameLabel.text = SharedFriendsModel.ContactMatches[row][@"username"];//[self.MatchUsers[row][@"username"];
+        cell.User = SharedFriendsModel.ContactMatches[row];
+        cell.ContactNameLabel.text = SharedFriendsModel.ContactMatchFullNames[row];
+    }
+    else {
+        int row = [indexPath row];
+        cell.UsernameLabel.text = displayFriends[row][@"username"];//[self.MatchUsers[row][@"username"];
+        cell.User = displayFriends[row];
+        cell.ContactNameLabel.text = displayFriendFullNames[row];
+    }
+    
+    cell.Followed = NO;
     
     // Figure out if the button should say follow or unfollow:
-    
-    // Check if cached friends are available, if not get them
-    if (SharedFriendsModel.Friends.count == 0) {
-        // Query the join table for follows originating from this user
-        PFQuery *friendsQuery = [PFQuery queryWithClassName:@"Follow"];
-        [friendsQuery whereKey:@"From" equalTo:[PFUser currentUser]];
-        
-        NSArray *objects = [friendsQuery findObjects];
-        for(PFObject *o in objects) {
-            // get the user being followed
-            PFUser* otherUser = [o objectForKey:@"To"];
-            [otherUser fetch];
-            // cache it
-            [SharedFriendsModel.Friends addObject:otherUser];
-            [SharedFriendsModel.FriendFullNames addObject:[FriendsModel FindNameByNumber:[otherUser objectForKey:@"phone"]]];
-        }
-    }
-
     for (PFUser *u in SharedFriendsModel.Friends) {
         if ([[u objectForKey:@"username"] isEqualToString:cell.UsernameLabel.text]) {
             // Set the cells user:
@@ -184,6 +223,73 @@
     }
     
     return cell;
+}
+
+#pragma mark - searchbar functions
+
+- (void)searchBarSearchButtonClicked:(UISearchBar *)asearchBar
+{
+    [displayFriends removeAllObjects];
+    [displayFriendFullNames removeAllObjects];
+    
+    SectionTitle = @"All Matching Users";
+    
+    FriendsModel * sharedFriendsModel = [FriendsModel GetSharedInstance];
+    
+    for (int i = 0; i < sharedFriendsModel.ContactMatches.count; i++)
+    {
+        PFUser * thisUser = sharedFriendsModel.ContactMatches[i];
+        NSString *thisName = sharedFriendsModel.ContactMatchFullNames[i];
+        if ([thisName rangeOfString:[asearchBar text] options:NSCaseInsensitiveSearch].location != NSNotFound)
+        {
+            [displayFriends addObject:thisUser];
+            [displayFriendFullNames addObject:thisName];
+        }
+    }
+    
+    PFQuery *FriendQuery = [PFUser query];
+    [FriendQuery whereKey:@"username" equalTo:asearchBar.text];
+    NSArray *Objects = [FriendQuery findObjects];
+    for (PFUser *U in Objects) {
+        [U fetch];
+        BOOL AlreadyFoundinContacts = NO;
+        for (PFUser *FoundAlready in displayFriends) {
+            if ([U.username isEqualToString:FoundAlready.username]) {
+                AlreadyFoundinContacts = YES;
+            }
+        }
+        if (AlreadyFoundinContacts == NO) {
+            [displayFriendFullNames addObject:U.username];
+            [displayFriends addObject:U];
+        }
+    }
+    [tableView reloadData];
+    [searchBar resignFirstResponder];
+    
+}
+
+- (void)searchBarCancelButtonClicked:(UISearchBar *)asearchBar
+{
+    [displayFriends removeAllObjects];
+    [displayFriendFullNames removeAllObjects];
+    SectionTitle = @"Users in Contacts";
+    [tableView reloadData];
+    [asearchBar resignFirstResponder];
+}
+
+
+
+- (void)searchBarTextDidBeginEditing:(UISearchBar *)asearchBar
+{
+    asearchBar.autocapitalizationType = UITextAutocapitalizationTypeWords;
+}
+
+
+
+- (void)searchBarTextDidEndEditing:(UISearchBar *)asearchBar
+{
+    [tableView reloadData];
+    [asearchBar resignFirstResponder];
 }
 
 /*

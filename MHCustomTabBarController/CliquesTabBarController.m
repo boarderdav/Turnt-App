@@ -38,6 +38,10 @@ NSString *const CliquesTabBarControllerViewControllerAlreadyVisibleNotification 
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    // Force the Navigation Bar Color
+    self.navigationController.navigationBar.barTintColor = [UIColor darkGrayColor];
+    self.navigationController.navigationBar.translucent = YES;
+    
     self.viewControllersByIdentifier = [NSMutableDictionary dictionary];
 }
 

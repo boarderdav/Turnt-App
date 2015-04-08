@@ -10,15 +10,20 @@
 
 @implementation PersonAnnotation
 
--(id)initWithTitle:(NSString *)newTitle Location:(CLLocationCoordinate2D)location {
+-(id)initWithTitle:(NSString *)newTitle subTitle:(NSString*)newsubTitle Location:(CLLocationCoordinate2D)location {
     self = [super init];
     
     if(self) {
         _title = newTitle;
         _coordinate = location;
+        _subTitle = newsubTitle;
     }
     
     return self;
+}
+
+- (NSString *)subtitle {
+    return _subTitle;
 }
 
 -(MKAnnotationView *)annotationView {

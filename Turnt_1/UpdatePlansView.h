@@ -9,17 +9,18 @@
 #import <UIKit/UIKit.h>
 #import "UIViewController+MJPopupViewController.h"
 
-@protocol PopupDelegate;
+@class UpdatePlansView;
 
-@interface UpdatePlansView : UIViewController {
+@protocol UpdatePlansViewDelegate<NSObject>
+@optional
+- (void)cancelButtonClicked:(UpdatePlansView*)aUpdatePlansView;
+@end
+
+@interface UpdatePlansView : UIViewController <UITextViewDelegate> {
     IBOutlet UITextView *PlansTextView;
 }
 
-@property (assign, nonatomic) id <PopupDelegate>delegate;
+@property (assign, nonatomic) id <UpdatePlansViewDelegate> delegate;
 
 @end
 
-@protocol PopupDelegate<NSObject>
-@optional
-- (void)cancelButtonClicked:(UpdatePlansView*)UpdatePlansView;
-@end

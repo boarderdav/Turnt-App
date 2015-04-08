@@ -15,6 +15,7 @@
 @property (nonatomic, retain) NSMutableArray* FriendFullNames;
 @property (nonatomic, retain) NSMutableArray* ContactMatches;
 @property (nonatomic, retain) NSMutableArray* ContactMatchFullNames;
+@property (nonatomic, retain) NSMutableArray* TempCliqueMembers;
 @property (nonatomic, strong) dispatch_queue_t ReadWriteQueue;
 
 
@@ -28,6 +29,7 @@
 // Get the current user's stored name for a contact associated with a number from the address book (full names arent stored on the server, preference given to contact names which differ by user)
 +(NSString *)FindNameByNumber:(NSString*) Number;
 -(void)FollowUser:(NSString*)username;
+-(void)FollowUserBack:(NSString*)username;
 -(void)UnfollowUser:(PFUser*)user;
 
 @end

@@ -16,7 +16,7 @@
     // Initialization code
     NSLog(@"Username: %@", self.UsernameLabel.text);
     // Collect information from the table if neccesary
-
+    
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
@@ -37,7 +37,7 @@
         [self.FollowButton setTitle: @"Unfollow" forState: UIControlStateHighlighted];
         [self.FollowButton setTitle: @"Unfollow" forState: UIControlStateReserved];
         [self.FollowButton setTitle: @"Unfollow" forState: UIControlStateDisabled];
-        Followed = false;
+        Followed = YES;
         // Follow the user
         [SharedFriendsModel FollowUser:self.UsernameLabel.text];
     }
@@ -47,6 +47,7 @@
         [self.FollowButton setTitle: @"Follow" forState: UIControlStateHighlighted];
         [self.FollowButton setTitle: @"Follow" forState: UIControlStateReserved];
         [self.FollowButton setTitle: @"Follow" forState: UIControlStateDisabled];
+        Followed = NO;
         // Unfollow the user
         [SharedFriendsModel UnfollowUser:self.User];
     }

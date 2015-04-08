@@ -8,16 +8,17 @@
 
 #import "AppDelegate.h"
 #import <Parse/Parse.h>
+#import <AddressBook/AddressBook.h>
 #import "LoginViewController.h"
-#import "FriendsModel.h"
-#import "LocationModel.h"
 
+#import "FriendsModel.h"
 
 @interface AppDelegate ()
 
 @end
 
 @implementation AppDelegate
+@synthesize safeToLaunch;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
@@ -27,34 +28,47 @@
                   clientKey:@"DI0T1zGR6hLS48IQqTqoH5xawtjed6lZcFuJmSvt"];
     [PFAnalytics trackAppOpenedWithLaunchOptions:launchOptions];
     
+    // Register for Push Notitications
+    if ([application respondsToSelector:@selector(registerUserNotificationSettings:)]) {
+        UIUserNotificationSettings *settings = [UIUserNotificationSettings settingsForTypes:(UIRemoteNotificationTypeBadge
+                                                                                             |UIRemoteNotificationTypeSound
+                                                                                             |UIRemoteNotificationTypeAlert) categories:nil];
+        [application registerUserNotificationSettings:settings];
+    } else {
+        UIRemoteNotificationType myTypes = UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeAlert | UIRemoteNotificationTypeSound;
+        [application registerForRemoteNotificationTypes:myTypes];
+    }
+    
     // Initialize memory for the friends model
     FriendsModel* SharedFriendModel = [FriendsModel GetSharedInstance];
     [SharedFriendModel initialize];
     
     // Make the status bar color light
-    //[[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
     
     // Initialize window programatically so that storyboard can be selected programatically
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     
     // If the user has previously logged in on this device:
     if ([PFUser currentUser]) {
+        // Go straight to the Turnt home screen ("Main Controller":RootViewController -> "Activity Feed":MainViewController) and do other neccesary stuff
         
-        // Get shared location model
-        LocationModel *GetSharedModel = [LocationModel getSharedInstance];
+        // Sign up this device for push notifications (Just in case, remove this later and put in registration section if API requests get high or loading the app takes to long)
+        [[PFInstallation currentInstallation] setObject:[PFUser currentUser] forKey:@"user"];
+        [[PFInstallation currentInstallation] saveEventually];
         
-        // Declare location as not updated in model
-        GetSharedModel.updatedThisSession = NO;
-        
-        // Go straight to the Turnt home screen ("Main Controller":RootViewController -> "Activity Feed":MainViewController)
+        [self checkforFollows];
         [self presentMainView];
+        
     } else {
+        
         // Go to Account Creation/Login ("Login and Registration":LoginViewController)
         [self presentLoginRegistration];
     }
     
     return YES;
 }
+
 
 
 - (void)applicationWillResignActive:(UIApplication *)application {
@@ -65,10 +79,6 @@
 - (void)applicationDidEnterBackground:(UIApplication *)application {
     // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
     // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
-
-    
-    // [[START LOCATION BACKGROUND UPDATES]]
-    
     
 }
 
@@ -78,12 +88,111 @@
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+    
+    if ([PFUser currentUser]) {
+        // Check for new follows:
+        [self checkforFollows];
+    }
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application {
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     // Saves changes in the application's managed object context before the application terminates.
-    [self saveContext];
+}
+
+#pragma mark - Global App Utilities
+
+-(BOOL) startLocUpdates {
+    
+    UIAlertView * alert;
+    
+    //We have to make sure that the Background App Refresh is enable for the Location updates to work in the background.
+    if([[UIApplication sharedApplication] backgroundRefreshStatus] == UIBackgroundRefreshStatusDenied){
+        
+        alert = [[UIAlertView alloc]initWithTitle:@""
+                                          message:@"The app doesn't work properly without Background App Refresh enabled. To turn it on, go to Settings > General > Background App Refresh"
+                                         delegate:nil
+                                cancelButtonTitle:@"Ok"
+                                otherButtonTitles:nil, nil];
+        [alert show];
+        return NO;
+    }else if([[UIApplication sharedApplication] backgroundRefreshStatus] == UIBackgroundRefreshStatusRestricted){
+        
+        alert = [[UIAlertView alloc]initWithTitle:@""
+                                          message:@"The functions of this app are limited because Background App Refresh is disabled."
+                                         delegate:nil
+                                cancelButtonTitle:@"Ok"
+                                otherButtonTitles:nil, nil];
+        [alert show];
+        return NO;
+    } else{
+        
+        self.locationTracker = [[LocationTracker alloc]init];
+        [self.locationTracker startLocationTracking];
+        
+        //Send the best location to server every 60 seconds
+        //You may adjust the time interval depends on the need of your app.
+        NSTimeInterval time = 120.0;
+        self.locationUpdateTimer =
+        [NSTimer scheduledTimerWithTimeInterval:time
+                                         target:self
+                                       selector:@selector(updateLocation)
+                                       userInfo:nil
+                                        repeats:YES];
+        return YES;
+    }
+}
+
+-(void) checkforFollows {
+    // Check for new follows:
+    PFQuery *newFollowQuery = [PFQuery queryWithClassName:@"Follow"];
+    [newFollowQuery whereKey:@"To" equalTo:[PFUser currentUser]];
+    [newFollowQuery whereKey:@"Accepted" equalTo:@NO];
+    [newFollowQuery whereKey:@"Read" equalTo:@NO];
+    
+    [newFollowQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+        
+        for(PFObject *o in objects) {
+            // Acknowledge reciept of the follow
+            o[@"Read"] = @YES;
+            [o saveInBackground];
+            
+            // Get the other user and prompt to follow back
+            PFUser* otherUser = [o objectForKey:@"From"];
+            [otherUser fetchInBackgroundWithBlock:^(PFObject *object, NSError *error) {
+                // If my nigga is pressed,
+                
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:object[@"username"]
+                                                                message:@"This user has followed you. Follow Back?"
+                                                               delegate:self
+                                                      cancelButtonTitle:@"No"
+                                                      otherButtonTitles:@"Yes", nil];
+                [alert show];
+            }];
+        }
+        
+    }];
+}
+
+#pragma mark - Delegates
+
+- (void)alertView:(UIAlertView *)alertView
+clickedButtonAtIndex:(NSInteger)buttonIndex{
+    
+    FriendsModel *SharedFriendsModel = [FriendsModel GetSharedInstance];
+    
+    if (buttonIndex == [alertView cancelButtonIndex]){
+        //cancel clicked ...do your action
+        
+    }else{
+        [SharedFriendsModel FollowUserBack:alertView.title];
+    }
+}
+
+-(void)updateLocation {
+    NSLog(@"Updated Location on Server");
+    
+    [self.locationTracker updateLocationToServer];
 }
 
 -(UIStatusBarStyle)preferredStatusBarStyle{
@@ -93,17 +202,21 @@
 #pragma mark - View Presentation Functions
 
 - (void)presentMainView {
+    
+    [self startLocUpdates];
+    
     self.storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     self.viewController = [self.storyboard instantiateViewControllerWithIdentifier:@"rootController"];
     
-    self.window.rootViewController = self.viewController;
+    [self.window setRootViewController:self.viewController];
+    //self.window.rootViewController = self.viewController;
     [self.window makeKeyAndVisible];
     
 }
 
 - (void)presentLoginRegistration {
     self.storyboard = [UIStoryboard storyboardWithName:@"LoginReg" bundle:nil];
-    self.viewController = [self.storyboard instantiateViewControllerWithIdentifier:@"LoginNigga"];
+    self.viewController = [self.storyboard instantiateViewControllerWithIdentifier:@"LoginRegLaunch"];
     
     self.window.rootViewController = self.viewController;
     [self.window makeKeyAndVisible];
@@ -117,84 +230,26 @@
     [self.window makeKeyAndVisible];
 }
 
-#pragma mark - Core Data stack
+#pragma mark - Push Notification Functions
 
-@synthesize managedObjectContext = _managedObjectContext;
-@synthesize managedObjectModel = _managedObjectModel;
-@synthesize persistentStoreCoordinator = _persistentStoreCoordinator;
-
-- (NSURL *)applicationDocumentsDirectory {
-    // The directory the application uses to store the Core Data store file. This code uses a directory named "NDJL.Project_Turnt" in the application's documents directory.
-    return [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject];
+- (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
+    // Store the deviceToken in the current installation and save it to Parse.
+    PFInstallation *currentInstallation = [PFInstallation currentInstallation];
+    [currentInstallation setDeviceTokenFromData:deviceToken];
+    currentInstallation.channels = @[ @"global" ];
+    [currentInstallation saveInBackground];
 }
 
-- (NSManagedObjectModel *)managedObjectModel {
-    // The managed object model for the application. It is a fatal error for the application not to be able to find and load its model.
-    if (_managedObjectModel != nil) {
-        return _managedObjectModel;
-    }
-    NSURL *modelURL = [[NSBundle mainBundle] URLForResource:@"Project_Turnt" withExtension:@"momd"];
-    _managedObjectModel = [[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL];
-    return _managedObjectModel;
+- (void)application:(UIApplication *)application didRegisterUserNotificationSettings:(UIUserNotificationSettings *)notificationSettings {
+    [application registerForRemoteNotifications];
 }
 
-- (NSPersistentStoreCoordinator *)persistentStoreCoordinator {
-    // The persistent store coordinator for the application. This implementation creates and return a coordinator, having added the store for the application to it.
-    if (_persistentStoreCoordinator != nil) {
-        return _persistentStoreCoordinator;
+- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
+    //[PFPush handlePush:userInfo];
+    if ( application.applicationState == UIApplicationStateActive ){
+        [self checkforFollows];
     }
     
-    // Create the coordinator and store
-    
-    _persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:[self managedObjectModel]];
-    NSURL *storeURL = [[self applicationDocumentsDirectory] URLByAppendingPathComponent:@"Project_Turnt.sqlite"];
-    NSError *error = nil;
-    NSString *failureReason = @"There was an error creating or loading the application's saved data.";
-    if (![_persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeURL options:nil error:&error]) {
-        // Report any error we got.
-        NSMutableDictionary *dict = [NSMutableDictionary dictionary];
-        dict[NSLocalizedDescriptionKey] = @"Failed to initialize the application's saved data";
-        dict[NSLocalizedFailureReasonErrorKey] = failureReason;
-        dict[NSUnderlyingErrorKey] = error;
-        error = [NSError errorWithDomain:@"YOUR_ERROR_DOMAIN" code:9999 userInfo:dict];
-        // Replace this with code to handle the error appropriately.
-        // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-        NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-        abort();
-    }
-    
-    return _persistentStoreCoordinator;
-}
-
-
-- (NSManagedObjectContext *)managedObjectContext {
-    // Returns the managed object context for the application (which is already bound to the persistent store coordinator for the application.)
-    if (_managedObjectContext != nil) {
-        return _managedObjectContext;
-    }
-    
-    NSPersistentStoreCoordinator *coordinator = [self persistentStoreCoordinator];
-    if (!coordinator) {
-        return nil;
-    }
-    _managedObjectContext = [[NSManagedObjectContext alloc] init];
-    [_managedObjectContext setPersistentStoreCoordinator:coordinator];
-    return _managedObjectContext;
-}
-
-#pragma mark - Core Data Saving support
-
-- (void)saveContext {
-    NSManagedObjectContext *managedObjectContext = self.managedObjectContext;
-    if (managedObjectContext != nil) {
-        NSError *error = nil;
-        if ([managedObjectContext hasChanges] && ![managedObjectContext save:&error]) {
-            // Replace this implementation with code to handle the error appropriately.
-            // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-            NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-            abort();
-        }
-    }
 }
 
 @end

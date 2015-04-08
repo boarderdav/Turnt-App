@@ -11,11 +11,11 @@
 #import <CoreLocation/CoreLocation.h>
 #import "RESideMenu.h"
 
-@interface MapViewController : UIViewController <MKMapViewDelegate, CLLocationManagerDelegate> {
-    CLLocationManager *locationManager;
+@interface MapViewController : UIViewController <MKMapViewDelegate, CLLocationManagerDelegate, UISearchBarDelegate> {
     IBOutlet MKMapView *mapView;
+    IBOutlet UISearchBar *searchBar;
+    IBOutlet UISegmentedControl *mapswitch;
+    BOOL showVenues;
 }
-
-
 
 @end

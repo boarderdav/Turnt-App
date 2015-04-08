@@ -20,6 +20,7 @@
 @synthesize ContactMatches;
 @synthesize ContactMatchFullNames;
 @synthesize ReadWriteQueue;
+@synthesize TempCliqueMembers;
 
 static FriendsModel* instance;
 
@@ -35,11 +36,12 @@ static FriendsModel* instance;
 
 // Allocate memory/Initialize custom queue
 -(void)initialize {
-        Friends = [[NSMutableArray alloc] init];
-        FriendFullNames = [[NSMutableArray alloc] init];
-        ContactMatches = [[NSMutableArray alloc] init];
-        ContactMatchFullNames = [[NSMutableArray alloc] init];
-        ReadWriteQueue = dispatch_queue_create("readwriteQueue",0);
+    Friends = [[NSMutableArray alloc] init];
+    FriendFullNames = [[NSMutableArray alloc] init];
+    ContactMatches = [[NSMutableArray alloc] init];
+    ContactMatchFullNames = [[NSMutableArray alloc] init];
+    TempCliqueMembers = [[NSMutableArray alloc] init];
+    ReadWriteQueue = dispatch_queue_create("readwriteQueue",0);
 }
 
 // Remove all stored information (For logout or something)
@@ -48,7 +50,7 @@ static FriendsModel* instance;
     [FriendFullNames removeAllObjects];
     [ContactMatches removeAllObjects];
     [ContactMatchFullNames removeAllObjects];
-    
+    [TempCliqueMembers removeAllObjects];
 }
 
 #pragma mark - Friend Management Utilites
@@ -105,18 +107,64 @@ static FriendsModel* instance;
         PFQuery *UserQuery = [PFUser query];
         [UserQuery whereKey:@"username" equalTo:username];
         PFUser *ToFollow = [UserQuery findObjects][0];
-        
-        // Add the user to the friends model in the background
-
-        [Friends addObject:ToFollow];
-        [FriendFullNames addObject:[ FriendsModel FindNameByNumber:ToFollow[@"phone"]]];
 
         // create an entry in the Follow table
         PFObject *follow = [PFObject objectWithClassName:@"Follow"];
         [follow setObject:[PFUser currentUser]  forKey:@"From"];
         [follow setObject:ToFollow forKey:@"To"];
-        [follow save];
+        [follow setValue:@NO forKey:@"Accepted"];
+        [follow setValue:@NO forKey:@"Read"];
+        [follow saveEventually];
+        
+        PFQuery *PushQuery = [PFInstallation query];
+        
+        // only return Installations that belong to a User that
+        // matches the innerQuery
+        [PushQuery whereKey:@"user" equalTo:ToFollow];
+        
+        PFPush *push = [[PFPush alloc] init];
+        [push setQuery:PushQuery];
+        NSString *Message = [NSString stringWithFormat:@"%@ just followed you on Turnt. Accept?", [PFUser currentUser].username];
+        [push setMessage:Message];
+        [push sendPushInBackground];
+        
     });
+    
+}
+
+-(void)FollowUserBack:(NSString*)username {
+    //Protect from simulaneous reading and writing to model
+    dispatch_barrier_async(ReadWriteQueue, ^{
+        // query for the user to follow
+        PFQuery *UserQuery = [PFUser query];
+        [UserQuery whereKey:@"username" equalTo:username];
+        PFUser *ToFollow = [UserQuery findObjects][0];
+        
+        // Add the user to the friends model in the background
+        
+        [Friends addObject:ToFollow];
+        [FriendFullNames addObject:[ FriendsModel FindNameByNumber:ToFollow[@"phone"]]];
+        
+        // create an entry in the Follow table
+        PFObject *follow = [PFObject objectWithClassName:@"Follow"];
+        [follow setObject:[PFUser currentUser]  forKey:@"From"];
+        [follow setObject:ToFollow forKey:@"To"];
+        [follow setValue:@YES forKey:@"Accepted"];
+        [follow setValue:@YES forKey:@"Read"];
+        [follow saveEventually];
+        
+        PFQuery *newFollowQuery = [PFQuery queryWithClassName:@"Follow"];
+        [newFollowQuery whereKey:@"To" equalTo:[PFUser currentUser]];
+        [newFollowQuery whereKey:@"From" equalTo:ToFollow];
+        [newFollowQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+            for(PFObject *o in objects) {
+                o[@"Accepted"] = @YES;
+                [o saveEventually];
+            }
+        }];
+        
+    });
+    
 }
 
 -(void)UnfollowUser:(PFUser *)user{
@@ -131,7 +179,20 @@ static FriendsModel* instance;
         [FollowQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
             // remove the follow in the background
             for (PFObject *o in objects) {
-                [o delete];
+                [o deleteEventually];
+            }
+        }];
+        
+        // query for complementary follow
+        PFQuery *FollowQuery2 = [PFQuery queryWithClassName:@"Follow"];
+        [FollowQuery2 whereKey:@"To" equalTo:[PFUser currentUser]];
+        [FollowQuery2 whereKey:@"From" equalTo:user];
+        
+        // remove from server
+        [FollowQuery2 findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+            // remove the follow in the background
+            for (PFObject *o in objects) {
+                [o deleteEventually];
             }
         }];
    

@@ -64,9 +64,6 @@
             [self.sideMenuViewController hideMenuViewController];
             break;
         case 3:
-            //Parties (Later)
-            break;
-        case 4:
             // Go to RBStoryboardLink to Settings Storyboard
             [self.sideMenuViewController setContentViewController:[[UINavigationController alloc] initWithRootViewController:[self.storyboard instantiateViewControllerWithIdentifier:@"settingsLinkTable"]]
                                                          animated:YES];
@@ -91,7 +88,7 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)sectionIndex
 {
-    return 5;
+    return 4;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -104,12 +101,12 @@
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifier];
         cell.backgroundColor = [UIColor clearColor];
         cell.textLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:21];
-        cell.textLabel.textColor = [UIColor whiteColor];
-        cell.textLabel.highlightedTextColor = [UIColor lightGrayColor];
+        cell.textLabel.textColor = [UIColor lightGrayColor];
+        cell.textLabel.highlightedTextColor = [UIColor whiteColor];
         cell.selectedBackgroundView = [[UIView alloc] init];
     }
     
-    NSArray *titles = @[@"Feed", @"Map", @"Cliques", @"Parties", @"Settings"];
+    NSArray *titles = @[@"Feed", @"Map", @"Clique", @"Settings"];
     cell.textLabel.text = titles[indexPath.row];
     cell.textLabel.textAlignment = NSTextAlignmentLeft;
     
